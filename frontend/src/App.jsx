@@ -1,17 +1,27 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useEffect, useState } from 'react';
+import { getHello } from './api';
 
-export default function App() {
+function App() {
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getHello();
+        setMessage(data.message);
+      } catch (error) {
+        setMessage('Failed to fetch message');
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-blue-600">
-        Tailwind is working!
-      </h1>
-      <button className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-        Test Button
-      </button>
+    <div>
+      <h1>React + FastAPI</h1>
+      <p>Message from backend: {message}</p>
     </div>
-  )
+  );
 }
+
+export default App;

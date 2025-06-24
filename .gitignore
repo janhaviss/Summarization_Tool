@@ -1,1 +1,12 @@
-**/myenv/
+# Ignore Python virtual environment
+backend/myenv/
+
+# Ignore frontend build artifacts (but allow node_modules)
+frontend/build/
+
+# Ignore compiled Python
+__pycache__/
+*.pyc
+
+# Ignore env files
+.env
