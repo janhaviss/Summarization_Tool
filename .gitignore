@@ -2,7 +2,7 @@
 backend/myenv/
 
 # Ignore frontend build artifacts (but allow node_modules)
-frontend/build/
+# frontend/build/
 
 # Ignore compiled Python
 __pycache__/
