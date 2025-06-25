@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-<<<<<<< HEAD
 from fastapi import FastAPI
 from router import  summarization ,translator,tt
 
@@ -23,21 +22,11 @@ origins = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-=======
-
-app = FastAPI()
-
-# Configure CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:3000","http://localhost:5173"],  # React's default port
->>>>>>> b63f7ed5cd7b7303d11e64ee410ea69beebfc54d
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-<<<<<<< HEAD
 # Default test route
 @app.get("/api/hello")
 def read_root():
@@ -53,12 +42,3 @@ app.include_router(tt.router)
 @app.get("/")
 def home():
     return {"message": "Summarization Tool API"}
-=======
-@app.get("/")
-async def root():
-    return {"message": "Welcome to the FastAPI backend!"}
-
-@app.get("/api/hello")
-async def hello():
-    return {"message": "Hello from FastAPI!"}
->>>>>>> b63f7ed5cd7b7303d11e64ee410ea69beebfc54d
