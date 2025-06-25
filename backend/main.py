@@ -1,69 +1,44 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import Dict, Any, Optional
+from fastapi import FastAPI
+from router import  summarization ,translator,tt
+
+# 🧩 Import your user router and DB setup
+# from users.router import router as user_router
+# from users import models
+from database import engine
+
+# Auto-create tables
+# models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Allow CORS for local development
+# Allow frontend dev server (adjust port if needed)
+origins = [
+    "http://localhost:5173",  # Vite default
+    "http://127.0.0.1:5173"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-class SummarizeRequest(BaseModel):
-    text: str
-    # You can add more parameters like summary length later
-    max_length: Optional[int] = None  # Example of optional parameter with default
+# Default test route
+@app.get("/api/hello")
+def read_root():
+    return {"message": "Hello from FastAPI! Mrunali is the best"}
 
-class SummaryResponse(BaseModel):
-    summary: str
-    original_length: int
-    summary_length: int
-    reduction_ratio: float  # Will be calculated in the endpoint
+# 🧩 Include users router
+# app.include_router(user_router)
 
-@app.post("/summarize", response_model=SummaryResponse)
-async def summarize_text(request: SummarizeRequest) -> Dict[str, Any]:
-    """
-    Summarize the input text and return statistics about the summarization.
-    
-    Args:
-        request: SummarizeRequest containing the text to summarize
-        
-    Returns:
-        Dictionary containing:
-        - summary: The summarized text
-        - original_length: Length of original text
-        - summary_length: Length of summary
-        - reduction_ratio: Percentage of original length
-        
-    Raises:
-        HTTPException: If summarization fails
-    """
-    try:
-        # This is still a placeholder - replace with your actual summarization logic
-        sentences = request.text.split('.')
-        summary = '. '.join(sentences[:3]) + '.' if len(sentences) > 3 else request.text
-        
-        original_len = len(request.text)
-        summary_len = len(summary)
-        reduction = (1 - (summary_len / original_len)) * 100 if original_len > 0 else 0
-        
-        return {
-            "summary": summary,
-            "original_length": original_len,
-            "summary_length": summary_len,
-            "reduction_ratio": round(reduction, 2)
-        }
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=str(e)
-        )
+app.include_router(summarization.router)
+app.include_router(translator.router)
+app.include_router(tt.router)
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+@app.get("/")
+def home():
+    return {"message": "Summarization Tool API"}
