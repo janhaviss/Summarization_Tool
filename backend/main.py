@@ -1,44 +1,47 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
-from router import  summarization ,translator,tt
+from router import summarization, translator, auth,tts,auth
+from fastapi import Depends
 
-# 🧩 Import your user router and DB setup
-# from users.router import router as user_router
-# from users import models
-from database import engine
-
-# Auto-create tables
-# models.Base.metadata.create_all(bind=engine)
-
+# app = FastAPI()
 app = FastAPI()
 
-# Allow frontend dev server (adjust port if needed)
-origins = [
-    "http://localhost:5173",  # Vite default
-    "http://127.0.0.1:5173"
-]
 
+
+# CORS setup
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Default test route
-@app.get("/api/hello")
-def read_root():
-    return {"message": "Hello from FastAPI! Mrunali is the best"}
+# Public endpoints   #! summarization
+app.include_router(
+    summarization.router,
+    prefix="/api/summarize",
+    tags=["Summarization"]
+)
 
-# 🧩 Include users router
-# app.include_router(user_router)
+# Protected endpoints  #! translate
+app.include_router(
+    translator.router,
+    prefix="/api/translate",
+    tags=["Translation"],
+    # dependencies=[Depends(auth.get_current_user)]  # Global protection
+)
 
-app.include_router(summarization.router)
-app.include_router(translator.router)
-app.include_router(tt.router)
+#! tts
+app.include_router(
+    tts.router,
+    prefix="/api/tts",
+    tags=["Text-to-Speech"]
+)
 
-@app.get("/")
-def home():
-    return {"message": "Summarization Tool API"}
+# Auth endpoints
+app.include_router(
+    auth.router,
+    prefix="/auth",
+    tags=["Authentication"]
+)
+

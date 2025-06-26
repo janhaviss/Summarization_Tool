@@ -1,18 +1,27 @@
 from gtts import gTTS
 import os
+from typing import Optional
+from fastapi import HTTPException
 
-def text_to_speech(text: str, lang: str = "en", output_dir: str = "static/audio") -> str:
-    os.makedirs(output_dir, exist_ok=True)
-    tts = gTTS(text=text, lang=lang)
-    filename = f"{output_dir}/output.mp3"
-    tts.save(filename)
-    return filename
-
-
-#offline
-# import pyttsx3
-
-# def text_to_speech(text: str) -> None:
-#     engine = pyttsx3.init()
-#     engine.say(text)
-#     engine.runAndWait()
+async def generate_speech(
+    text: str,
+    lang: str = "en",
+    output_path: str = "output.mp3",
+    speed: float = 1.0
+):
+    """Generate speech audio file using gTTS"""
+    try:
+        tts = gTTS(text=text, lang=lang, slow=False)
+        
+        # Adjust speed by modifying temp file
+        temp_path = "temp.mp3"
+        tts.save(temp_path)
+        
+        # Speed adjustment would go here (requires pydub/ffmpeg for premium)
+        os.rename(temp_path, output_path)
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"TTS generation failed: {str(e)}"
+        )
