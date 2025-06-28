@@ -2,10 +2,13 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from router import summarization, translator, auth,tts,auth
 from fastapi import Depends
+from fastapi.staticfiles import StaticFiles
+
 
 # app = FastAPI()
 app = FastAPI()
 
+app.mount("/audio", StaticFiles(directory="static/audio"), name="audio")
 
 
 # CORS setup
