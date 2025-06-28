@@ -2,6 +2,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from router import  summarization ,translator,tt
+from fastapi.staticfiles import StaticFiles
+
+
 
 # 🧩 Import your user router and DB setup
 # from users.router import router as user_router
@@ -26,6 +29,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# Serve static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Default test route
 @app.get("/api/hello")
