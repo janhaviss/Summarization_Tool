@@ -1,22 +1,20 @@
 # config.py
-import os
-from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
-
-load_dotenv()
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
-    SECRET_KEY: str = os.getenv("SECRET_KEY")
-    ALGORITHM: str = os.getenv("ALGORITHM", "HS256")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(
-        os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "30")
+    SECRET_KEY: str
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    DATABASE_URL: str
+
+    # ✅ Add summarizer-specific fields:
+    MODEL_NAME: str = "facebook/bart-large-cnn"
+    MAX_TEXT_LENGTH: int = 5000
+    MAX_FILE_SIZE_MB: int = 10
+
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        extra="allow"
     )
-    # Add other settings as needed
-    DATABASE_URL: str = os.getenv("DATABASE_URL")
-    
-    class Config:
-        case_sensitive = True
-        env_file = ".env"
-        env_file_encoding = "utf-8"
 
 settings = Settings()

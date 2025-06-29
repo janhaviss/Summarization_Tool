@@ -102,5 +102,5 @@ async def translate_text_endpoint(
 
     return response 
 
-def normalize_language(lang: str) -> str:
-    return language_map.get(lang.lower(), lang)
+# def normalize_language(lang: str) -> str:
+#     return language_map.get(lang.lower(), lang)
