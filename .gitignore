@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 **/myenv/
-.env
-=======
+
 # Ignore Python virtual environment
 backend/myenv/
 
@@ -14,4 +12,5 @@ __pycache__/
 
 # Ignore env files
 .env
->>>>>>> b63f7ed5cd7b7303d11e64ee410ea69beebfc54d
+
+*.py[cod]
