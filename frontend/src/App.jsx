@@ -3,9 +3,18 @@ import Navbar from './components/navbar'
 import summarizerApi from './api/summarizer';
 import Translate from './components/translator';
 import translateApi from './api/translator'
+import Footer from './components/footer';
+import { Outlet } from 'react-router-dom';
+
+
 
 
 function App() {
+// TO CHECK IF AUTHENTICATION IS TRUE OR FALSE
+// Shows login/register buttons when isAuthenticated is false
+// Shows profile dropdown when isAuthenticated is true
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+
   const [inputText, setInputText] = useState('')
   const [summary, setSummary] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -90,7 +99,7 @@ function App() {
   return (
     <div> {/* Root Div */}
 
-    <Navbar />
+      <Navbar isAuthenticated={isAuthenticated} />
     <div className="min-h-screen bg-[#f5efff] py-8 px-4 sm:px-6 lg:px-8">  {/* Main Container */}
       <div className="max-w-6xl mx-auto"> {/* Increased max-width to accommodate side-by-side layout ** DIV 2** */} 
         <h1 className="text-3xl font-bold text-center text-gray-900 mb-4">Text Summarizer</h1>
@@ -206,9 +215,32 @@ function App() {
 />  
 
 </div> {/* DIV 2 CLOSED*/} 
+
+
 </div> {/*Main Container closed*/}
+<Footer />
+
 </div> /* Root Div closed*/
   )
 }
 
 export default App
+
+
+// src/components/AppLayout.jsx (replaces App.jsx)
+// import { Outlet } from 'react-router-dom'
+// import Navbar from './components/navbar'
+// import { useAuth } from './context/AuthContext'
+
+// export default function AppLayout() {
+//   const { isAuthenticated } = useAuth();
+
+//   return (
+//     <div className="app">
+//       <Navbar isAuthenticated={isAuthenticated} />
+//       <main>
+//         <Outlet />
+//       </main>
+//     </div>
+//   )
+// }
