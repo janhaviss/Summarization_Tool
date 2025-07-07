@@ -1,8 +1,8 @@
-import api from './index';
+import apiClient from './client';
 
 const translateText = async (text, targetLang) => {
   try {
-    const response = await api.post('/translate', { text, target_lang: targetLang }); //takes what user has input
+    const response = await apiClient.post('api/translate/translate', { text, target_lang: targetLang }); //takes what user has input
     return response.data; //returns response for it
   } catch (error) {
     // Enhanced error handling

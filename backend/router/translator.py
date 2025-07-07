@@ -5,6 +5,8 @@ from models.user import User
 from database import get_db
 from service.translator import translate_text
 from typing import Optional
+from pydantic import BaseModel
+
 
 router = APIRouter(tags=["Translation"])
 
@@ -24,10 +26,13 @@ async def get_languages():
     ]
     return {"languages": languages}
 
+class TranslationRequest(BaseModel):
+    text: str
+    target_lang: str
+
 @router.post("/translate")
 async def translate_text_endpoint(
-    text: str,
-    target_language: str,
+    request: TranslationRequest,
     current_user: Optional[User] = Depends(get_current_user_optional),
     db: Session = Depends(get_db)
 ):
@@ -36,6 +41,9 @@ async def translate_text_endpoint(
     - Guests: limited to 500 characters
     - Authenticated users: limited to 5000 characters
     """
+    text = request.text
+    target_language = request.target_lang
+    
     # Validate input
     if not text.strip():
         raise HTTPException(

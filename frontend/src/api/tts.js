@@ -1,10 +1,11 @@
-import api from './index';
+import apiClient from './client';
 
-const textToSpeech = async (text, lang) => {
+const textToSpeech = async (translatedText, targetLanguage, speed = 1.0) => {
   try {
-      const response = await api.post('/tts', {
-        text: text,
-        lang: lang,
+      const response = await apiClient.post('/api/tts/synthesize', {
+  text: translatedText,
+  language: targetLanguage,
+  speed // optional
       })
     return response.data; //returns response for it
 

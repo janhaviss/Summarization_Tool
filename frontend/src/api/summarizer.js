@@ -1,20 +1,34 @@
-import api from './index';
+import apiClient from './client';
 
-const summarizeText = async (text) => {
+// named export... import by exact name
+export const summarizeText = async (text, method, tone) => { //taking arguments
   try {
-    const response = await api.post('/summarize', { text }); //takes what user has input
-    return response.data; //returns response for it
+    const response = await apiClient.post('/api/summarize/text', { //GAVE PROPER PATH 
+      text,
+      method,
+      tone,
+    });
+    return response.data;
   } catch (error) {
-    // Enhanced error handling
-    const errorData = {
-      status: error.response?.status || 500,
-      message: error.response?.data?.detail || 
-              error.response?.data?.message || 
-              error.message || 
-              'Summarization failed'
-    };
-    throw errorData;
+      console.error('API Error:', error); // <-- this will reveal more
+
+    throw error.response?.data?.detail || 'Summarization failed';
   }
 };
 
-export default { summarizeText };
+export const summarizeFile = async (file, method = 'transformers') => {
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    const response = await apiClient.post('/api/summarize/file', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.detail || 'File summarization failed';
+  }
+};
+

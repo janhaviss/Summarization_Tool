@@ -1,3 +1,32 @@
+
+import { RouterProvider } from 'react-router-dom';
+import router from './routes';
+
+
+export default function App() {
+  return (
+  <>
+  <RouterProvider router={router} />
+  </>
+  )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // import { useState } from 'react'
 // import Navbar from './components/navbar'
 // import summarizerApi from './api/summarizer';
@@ -246,9 +275,3 @@
 // // }
 
 // src/App.jsx
-import { RouterProvider } from 'react-router-dom';
-import router from './routes';
-
-export default function App() {
-  return <RouterProvider router={router} />;
-}

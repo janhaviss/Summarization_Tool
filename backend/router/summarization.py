@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 # Guest usage config
 guest_usage: Dict[Tuple[str, date], int] = {}
-GUEST_DAILY_LIMIT = 5
+GUEST_DAILY_LIMIT = 20  # CHANGES LIMIT TO 20 FOR TESTING
 MAX_GUEST_TEXT_LENGTH = 5000
 MAX_FILE_SIZE_MB = 10
 
