@@ -1,0 +1,10 @@
+pages are navigated and routed
+components are imported
+homes is index -> set in route -> to be visible as first thing
+main -> app -> route -> appLayout -> homes -> rest
+setMessage(first set things) -> message(then use)
+
+
+Client Request → Main.py → Router → Service → Model → Database
+                                 ↓
+Response ← Main.py ← Router ← Service ← Schemas (Validation)

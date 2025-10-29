@@ -5,13 +5,16 @@ from fastapi.security import OAuth2PasswordBearer, HTTPBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-
 from database import get_db
 from models.user import User
 from schemas.auth import TokenData
 from service.config import settings  
 ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
+# Token configuration
+SECRET_KEY = settings.SECRET_KEY
+ALGORITHM = "HS256"
+RESET_TOKEN_EXPIRE_MINUTES = 60  # 1 hour
 
 # Security utilities
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -101,3 +104,47 @@ async def get_current_user_optional(
         return await get_current_user(credential, db)
     except (JWTError, HTTPException):
         return None
+    
+def create_reset_token(email: str) -> str:
+    expires = datetime.utcnow() + timedelta(minutes=30)
+    return jwt.encode(
+        {"sub": email, "exp": expires},
+        settings.SECRET_KEY,
+        algorithm=settings.ALGORITHM
+    )
+
+def verify_reset_token(token: str) -> str:
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        return payload["sub"]
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Reset token has expired"
+        )
+    except jwt.JWTError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid token"
+        )
+    
+# def create_password_reset_token(email: str) -> str:
+#     """Generate a JWT token for password reset"""
+#     expire = datetime.utcnow() + timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES)
+#     to_encode = {"sub": email, "exp": expire}
+#     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+# def verify_password_reset_token(token: str) -> str:
+#     """
+#     Verify the password reset token and return the email if valid
+#     Returns None if token is invalid or expired
+#     """
+#     try:
+#         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+#         email: str = payload.get("sub")
+#         if email is None:
+#             return None
+#         return email
+#     except JWTError:
+#         return None
+    

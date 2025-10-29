@@ -14,3 +14,6 @@ __pycache__/
 .env
 
 *.py[cod]
+
+# Text files
+.txt
